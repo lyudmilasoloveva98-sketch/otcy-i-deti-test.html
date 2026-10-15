@@ -3,35 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проверка ДЗ: Отцы и дети · Тургенев</title>
+    <title>Тест с таймером: Отцы и дети · Тургенев</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            background: #f5f0e7;
+            background: linear-gradient(135deg, #f5f0e7 0%, #ede3d5 100%);
             color: #2c2c2c;
             padding: 20px;
+            min-height: 100vh;
             line-height: 1.5;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; }
+        .container { max-width: 780px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 25px; }
         h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #3e2e1f;
             letter-spacing: 1px;
             border-bottom: 3px solid #b99b7b;
             display: inline-block;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
         }
-        .sub { font-size: 1.1rem; color: #6b4f3a; margin-top: 8px; font-style: italic; }
+        .sub { font-size: 1rem; color: #6b4f3a; margin-top: 6px; font-style: italic; }
 
-        /* --- Стартовый экран --- */
+        .screen { animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============ СТАРТОВЫЙ ЭКРАН ============ */
         .start-screen {
-            max-width: 520px;
-            margin: 0 auto 30px;
             background: white;
             border-radius: 28px;
-            padding: 35px 30px;
+            padding: 40px 32px;
             box-shadow: 0 12px 30px rgba(139, 107, 77, 0.15);
             border: 2px solid #e2d6c8;
             text-align: center;
@@ -41,14 +46,14 @@
             color: #5e3e2b;
             margin-bottom: 10px;
         }
-        .start-screen p {
+        .start-screen > p {
             color: #6b4f3a;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
             font-size: 1rem;
         }
         .start-screen input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 16px 20px;
             border-radius: 50px;
             border: 2px solid #d6c8b8;
             font-size: 1.1rem;
@@ -69,11 +74,23 @@
             background: #fff5f5;
         }
         .start-hint {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: #8f7a66;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
             font-style: italic;
         }
+        .rules-box {
+            background: #fff8ef;
+            border-left: 5px solid #b99b7b;
+            border-radius: 14px;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #5e3e2b;
+            margin-bottom: 24px;
+        }
+        .rules-box p { margin: 5px 0; }
+        .rules-box strong { color: #3e2e1f; }
         .btn-start {
             background: #8b6b4d;
             color: white;
@@ -89,99 +106,180 @@
         }
         .btn-start:hover { background: #6f543d; }
 
-        /* --- Сетка с тестами --- */
-        .grid { display: flex; flex-wrap: wrap; gap: 25px; }
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            flex: 1 1 340px;
-            border: 1px solid #e2d6c8;
-        }
-        .card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: #5e3e2b;
+        /* ============ ЭКРАН ТЕСТА ============ */
+        .quiz-top {
             display: flex;
             align-items: center;
-            gap: 8px;
-            border-left: 6px solid #b99b7b;
-            padding-left: 15px;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 22px;
+            background: white;
+            padding: 18px 22px;
+            border-radius: 22px;
+            box-shadow: 0 6px 18px rgba(139, 107, 77, 0.08);
+            border: 1px solid #e2d6c8;
         }
-        .question {
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 1px dashed #dacfc2;
+        .progress-info { flex: 1; }
+        .progress-label {
+            font-size: 0.95rem;
+            color: #6b4f3a;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
-        .question:last-child { border-bottom: none; }
-        .question p { font-weight: 600; margin-bottom: 10px; font-size: 1.02rem; }
-        .options { display: flex; flex-direction: column; gap: 7px; }
+        .progress-label span { color: #8b6b4d; font-weight: 800; }
+        .progress-bar {
+            height: 10px;
+            background: #e8ddd0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #b99b7b, #8b6b4d);
+            transition: width 0.4s ease;
+            border-radius: 10px;
+            width: 0%;
+        }
+        .timer-wrap {
+            width: 82px;
+            height: 82px;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .timer-wrap svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            display: block;
+        }
+        .timer-wrap circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+        .timer-bg { stroke: #e8ddd0; }
+        .timer-fg {
+            stroke: #4caf50;
+            stroke-dasharray: 263.9;
+            stroke-dashoffset: 0;
+            transition: stroke 0.3s ease;
+        }
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #3e2e1f;
+            transition: color 0.3s;
+        }
+        .timer-wrap.timeout {
+            animation: pulse-red 0.5s;
+        }
+        @keyframes pulse-red {
+            0%, 100% { filter: none; }
+            50% { filter: drop-shadow(0 0 15px rgba(244, 67, 54, 0.9)); }
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(139, 107, 77, 0.1);
+            border: 1px solid #e2d6c8;
+        }
+        .question-card.animate {
+            animation: slideIn 0.4s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .block-label {
+            display: inline-block;
+            background: #f2ebe2;
+            color: #6b4f3a;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+        .q-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+        .options { display: flex; flex-direction: column; gap: 10px; }
         .option {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
             background: #faf7f2;
-            padding: 8px 14px;
-            border-radius: 40px;
-            border: 1px solid #e6dbce;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .option:hover { background: #f0e6da; }
-        .option input[type="radio"] { width: 18px; height: 18px; accent-color: #8b6b4d; cursor: pointer; }
-        .option label { cursor: pointer; flex: 1; font-size: 0.97rem; }
-        .truefalse { display: flex; gap: 12px; margin-top: 8px; }
-        .tf-btn {
-            background: #faf7f2;
-            border: 1px solid #d6c8b8;
-            padding: 10px 16px;
+            padding: 14px 20px;
             border-radius: 50px;
-            font-weight: 600;
+            border: 2px solid #e6dbce;
             cursor: pointer;
-            transition: 0.15s;
-            flex: 1;
-            text-align: center;
-            font-size: 0.95rem;
+            transition: 0.18s;
+            font-size: 1.02rem;
+            text-align: left;
+            font-family: inherit;
+            color: inherit;
+            width: 100%;
         }
-        .tf-btn.selected-true { background: #a7c9a7; border-color: #4e7a4e; color: #1e3a1e; }
-        .tf-btn.selected-false { background: #e6b8b8; border-color: #a14f4f; color: #4a1e1e; }
-        .tf-btn:hover { background: #e6dbce; }
-        .btn-final {
-            background: #5e3e2b;
+        .option:hover {
+            background: #f0e6da;
+            border-color: #b99b7b;
+            transform: translateX(4px);
+        }
+        .option.selected {
+            background: #8b6b4d;
+            border-color: #5e3e2b;
             color: white;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 50px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-            letter-spacing: 0.5px;
         }
-        .btn-final:hover { background: #3e2e1f; }
-        .btn-final:disabled { background: #b9a897; cursor: not-allowed; }
+        .option .letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e8ddd0;
+            color: #5e3e2b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.95rem;
+            transition: 0.18s;
+        }
+        .option:hover .letter { background: #d6c8b8; }
+        .option.selected .letter {
+            background: rgba(255, 255, 255, 0.28);
+            color: white;
+        }
 
-        /* --- Итоговая карточка --- */
+        /* ============ ФИНАЛЬНЫЙ ЭКРАН ============ */
         .final-card {
-            margin-top: 30px;
             background: linear-gradient(135deg, #fff8ef 0%, #f5e8d8 100%);
             border: 2px solid #b99b7b;
             border-radius: 28px;
-            padding: 35px 30px;
+            padding: 38px 30px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(139, 107, 77, 0.2);
             position: relative;
             overflow: hidden;
         }
-        /* Водяной знак с именем — повторяется по диагонали */
         .final-card::before {
             content: attr(data-watermark);
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-25deg);
-            font-size: 3.5rem;
+            font-size: 3.4rem;
             color: rgba(139, 107, 77, 0.09);
             white-space: nowrap;
             pointer-events: none;
@@ -196,24 +294,21 @@
             font-weight: 800;
             color: #3e2e1f;
             margin-bottom: 5px;
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.7);
+            padding: 10px 24px;
+            background: rgba(255, 255, 255, 0.75);
             border-radius: 50px;
             display: inline-block;
             border: 2px solid #b99b7b;
         }
         .final-label {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: #8f7a66;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
         .final-card h2 {
-            border: none;
-            justify-content: center;
-            padding: 0;
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             color: #5e3e2b;
             margin-bottom: 15px;
         }
@@ -221,10 +316,10 @@
             font-size: 3rem;
             font-weight: 800;
             color: #8b6b4d;
-            margin: 10px 0;
+            margin: 8px 0;
         }
         .final-mark {
-            font-size: 2.2rem;
+            font-size: 2.1rem;
             font-weight: 700;
             margin: 15px 0;
             padding: 15px 40px;
@@ -236,25 +331,36 @@
         .mark-3 { background: #fff3cd; color: #856404; border: 2px solid #ffc107; }
         .mark-2 { background: #f8d7da; color: #721c24; border: 2px solid #dc3545; }
         .final-details {
-            margin-top: 20px;
+            margin-top: 22px;
             text-align: left;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 16px;
-            padding: 18px;
-            font-size: 1rem;
+            padding: 20px;
+            font-size: 0.98rem;
+            max-height: 400px;
+            overflow-y: auto;
         }
-        .final-details p { margin: 6px 0; }
+        .final-details p { margin: 8px 0; }
+        .final-details .err-item {
+            background: #ffe6e6;
+            border-left: 4px solid #b33a3a;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-size: 0.93rem;
+        }
         .final-meta {
-            margin-top: 20px;
-            font-size: 0.9rem;
+            margin-top: 22px;
+            font-size: 0.92rem;
             color: #6b4f3a;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255, 255, 255, 0.75);
             border-radius: 14px;
-            padding: 12px 18px;
-            display: inline-block;
+            padding: 15px 20px;
             text-align: left;
+            display: inline-block;
         }
         .final-meta strong { color: #3e2e1f; }
+        .final-meta p { margin: 5px 0; }
         .code-badge {
             display: inline-block;
             background: #3e2e1f;
@@ -264,29 +370,47 @@
             letter-spacing: 2px;
             padding: 6px 14px;
             border-radius: 8px;
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             margin-left: 6px;
         }
 
-        /* --- Предупреждение о повторном прохождении --- */
-        .warn-box {
-            background: #fff3cd;
-            border-left: 6px solid #ffc107;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            color: #856404;
-            font-size: 1.05rem;
+        /* Индикатор отправки на почту */
+        .send-status {
+            margin-top: 18px;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: inline-block;
         }
-        .warn-box strong { display: block; margin-bottom: 6px; font-size: 1.15rem; }
+        .send-pending {
+            background: #e2e3f5;
+            color: #2a2a72;
+            border: 1px solid #9294c9;
+        }
+        .send-ok {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #2e7d32;
+        }
+        .send-fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #b33a3a;
+        }
 
-        footer { text-align: center; margin-top: 45px; font-size: 0.9rem; color: #8f7a66; }
-        @media (max-width: 700px) {
-            h1 { font-size: 1.7rem; }
+        footer { text-align: center; margin-top: 40px; font-size: 0.88rem; color: #8f7a66; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .question-card { padding: 24px 20px; }
+            .q-text { font-size: 1.15rem; }
             .final-mark { font-size: 1.6rem; padding: 12px 25px; }
             .final-score { font-size: 2.2rem; }
             .final-card::before { font-size: 2rem; }
-            .final-student { font-size: 1.2rem; }
+            .final-student { font-size: 1.25rem; }
+            .timer-wrap { width: 70px; height: 70px; }
+            .timer-text { font-size: 1.35rem; }
         }
     </style>
 </head>
@@ -294,234 +418,306 @@
 <div class="container">
     <header>
         <h1>📖 «Отцы и дети»</h1>
-        <div class="sub">Проверка знания сюжета · И.С. Тургенев · 20 вопросов</div>
+        <div class="sub">Тест с таймером · 20 вопросов · 10 секунд на ответ</div>
     </header>
 
     <!-- ЭКРАН 1: Ввод имени -->
-    <div id="startScreen" class="start-screen">
-        <h2>👋 Перед началом теста</h2>
-        <p>Введите вашу фамилию и имя. Они будут отображены в итоговом результате.</p>
-        <input type="text" id="studentName" placeholder="Например: Иванов Иван" maxlength="60" autocomplete="off">
-        <div class="start-hint">⚠️ Внимание: тест можно пройти только один раз. Будьте внимательны при ответах!</div>
-        <button class="btn-start" onclick="startTest()">▶ Начать тест</button>
+    <div id="startScreen" class="screen">
+        <div class="start-screen">
+            <h2>👋 Перед началом теста</h2>
+            <p>Введите вашу фамилию и имя. Они появятся в итоговом результате и будут отправлены преподавателю.</p>
+            <input type="text" id="studentName" placeholder="Например: Иванов Иван" maxlength="60" autocomplete="off">
+            <div class="start-hint">⚠️ Тест проходится один раз. Будьте внимательны!</div>
+
+            <div class="rules-box">
+                <p>🎯 <strong>20 вопросов</strong> по роману И.С. Тургенева «Отцы и дети».</p>
+                <p>⏱ На каждый вопрос даётся <strong>10 секунд</strong>.</p>
+                <p>➡️ После ответа или истечения времени автоматически открывается следующий вопрос.</p>
+                <p>🚫 Вернуться к предыдущему вопросу нельзя.</p>
+                <p>📧 В конце результат автоматически отправится преподавателю на почту.</p>
+                <p>🏆 Вы увидите свою оценку по 5-балльной шкале.</p>
+            </div>
+
+            <button class="btn-start" onclick="startTest()">▶ Начать тест</button>
+        </div>
     </div>
 
     <!-- ЭКРАН 2: Тест -->
-    <div id="testContent" style="display:none;">
-        <div class="grid">
-            <!-- Блок 1: Тест с выбором ответа (8 вопросов) -->
-            <div class="card">
-                <h2>🔘 Выбор ответа</h2>
-                <div id="quiz1">
-                    <div class="question" data-correct="b">
-                        <p>1. Кто приезжает вместе с Аркадием Кирсановым в Марьино?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q1" value="a" id="q1a"><label for="q1a">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="q1" value="b" id="q1b"><label for="q1b">Евгений Базаров</label></div>
-                            <div class="option"><input type="radio" name="q1" value="c" id="q1c"><label for="q1c">Николай Петрович</label></div>
-                            <div class="option"><input type="radio" name="q1" value="d" id="q1d"><label for="q1d">Ситников</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="c">
-                        <p>2. Как называется имение Кирсановых?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q2" value="a" id="q2a"><label for="q2a">Никольское</label></div>
-                            <div class="option"><input type="radio" name="q2" value="b" id="q2b"><label for="q2b">Базаровка</label></div>
-                            <div class="option"><input type="radio" name="q2" value="c" id="q2c"><label for="q2c">Марьино</label></div>
-                            <div class="option"><input type="radio" name="q2" value="d" id="q2d"><label for="q2d">Одинцово</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="a">
-                        <p>3. Кто из героев является главным «нигилистом»?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q3" value="a" id="q3a"><label for="q3a">Евгений Базаров</label></div>
-                            <div class="option"><input type="radio" name="q3" value="b" id="q3b"><label for="q3b">Аркадий Кирсанов</label></div>
-                            <div class="option"><input type="radio" name="q3" value="c" id="q3c"><label for="q3c">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="q3" value="d" id="q3d"><label for="q3d">Николай Петрович</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="d">
-                        <p>4. Что произошло на дуэли Базарова и Павла Петровича?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q4" value="a" id="q4a"><label for="q4a">Базаров убит</label></div>
-                            <div class="option"><input type="radio" name="q4" value="b" id="q4b"><label for="q4b">Павел Петрович убит</label></div>
-                            <div class="option"><input type="radio" name="q4" value="c" id="q4c"><label for="q4c">Оба невредимы</label></div>
-                            <div class="option"><input type="radio" name="q4" value="d" id="q4d"><label for="q4d">Павел Петрович ранен в ногу</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="b">
-                        <p>5. Кто такая Фенечка?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q5" value="a" id="q5a"><label for="q5a">Дочь Одинцовой</label></div>
-                            <div class="option"><input type="radio" name="q5" value="b" id="q5b"><label for="q5b">Возлюбленная Николая Петровича</label></div>
-                            <div class="option"><input type="radio" name="q5" value="c" id="q5c"><label for="q5c">Сестра Базарова</label></div>
-                            <div class="option"><input type="radio" name="q5" value="d" id="q5d"><label for="q5d">Горничная Одинцовой</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="a">
-                        <p>6. Куда Базаров уезжает из Марьина в середине романа?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q6" value="a" id="q6a"><label for="q6a">К своим родителям</label></div>
-                            <div class="option"><input type="radio" name="q6" value="b" id="q6b"><label for="q6b">В Петербург</label></div>
-                            <div class="option"><input type="radio" name="q6" value="c" id="q6c"><label for="q6c">За границу</label></div>
-                            <div class="option"><input type="radio" name="q6" value="d" id="q6d"><label for="q6d">В Никольское к Одинцовой</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="c">
-                        <p>7. Кто из героев умирает от тифа в конце романа?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q7" value="a" id="q7a"><label for="q7a">Николай Петрович</label></div>
-                            <div class="option"><input type="radio" name="q7" value="b" id="q7b"><label for="q7b">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="q7" value="c" id="q7c"><label for="q7c">Евгений Базаров</label></div>
-                            <div class="option"><input type="radio" name="q7" value="d" id="q7d"><label for="q7d">Аркадий</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="b">
-                        <p>8. На ком женится Аркадий в финале?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="q8" value="a" id="q8a"><label for="q8a">На Анне Одинцовой</label></div>
-                            <div class="option"><input type="radio" name="q8" value="b" id="q8b"><label for="q8b">На Кате</label></div>
-                            <div class="option"><input type="radio" name="q8" value="c" id="q8c"><label for="q8c">На Фенечке</label></div>
-                            <div class="option"><input type="radio" name="q8" value="d" id="q8d"><label for="q8d">На Кукшиной</label></div>
-                        </div>
-                    </div>
-                </div>
+    <div id="quizScreen" class="screen" style="display:none;">
+        <div class="quiz-top">
+            <div class="progress-info">
+                <div class="progress-label">Вопрос <span id="qNum">1</span> из <span id="qTotal">20</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
             </div>
-
-            <!-- Блок 2: Верно/Неверно (6 вопросов) -->
-            <div class="card">
-                <h2>✅ Верно / ❌ Неверно</h2>
-                <div id="tfBlock">
-                    <div class="question" data-correct="true">
-                        <p>1. Базаров влюбился в Анну Сергеевну Одинцову.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="false">
-                        <p>2. Аркадий остался нигилистом до конца романа.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="true">
-                        <p>3. У Базарова и Павла Петровича была дуэль.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="false">
-                        <p>4. Базаров был дворянином по происхождению.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="true">
-                        <p>5. Родители Базарова очень любили своего сына.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="false">
-                        <p>6. Одинцова ответила взаимностью на признание Базарова.</p>
-                        <div class="truefalse">
-                            <div class="tf-btn" onclick="selectTF(this, 'true')">Верно</div>
-                            <div class="tf-btn" onclick="selectTF(this, 'false')">Неверно</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Блок 3: Угадай героя (6 вопросов) -->
-            <div class="card">
-                <h2>🧑‍🤝‍🧑 Угадай героя</h2>
-                <div id="matchBlock">
-                    <div class="question" data-correct="1">
-                        <p>1. «Высокий, худой, с длинными волосами, в балахоне с кистями» — это...</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m1" value="0" id="m1a"><label for="m1a">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="m1" value="1" id="m1b"><label for="m1b">Евгений Базаров</label></div>
-                            <div class="option"><input type="radio" name="m1" value="2" id="m1c"><label for="m1c">Аркадий</label></div>
-                            <div class="option"><input type="radio" name="m1" value="3" id="m1d"><label for="m1d">Николай Петрович</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="2">
-                        <p>2. Кто из братьев Кирсановых служил в гвардии и был аристократом?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m2" value="0" id="m2a"><label for="m2a">Николай Петрович</label></div>
-                            <div class="option"><input type="radio" name="m2" value="1" id="m2b"><label for="m2b">Аркадий</label></div>
-                            <div class="option"><input type="radio" name="m2" value="2" id="m2c"><label for="m2c">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="m2" value="3" id="m2d"><label for="m2d">Базаров</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="0">
-                        <p>3. «Умная, красивая вдова», в которую влюбился Базаров — это...</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m3" value="0" id="m3a"><label for="m3a">Анна Одинцова</label></div>
-                            <div class="option"><input type="radio" name="m3" value="1" id="m3b"><label for="m3b">Фенечка</label></div>
-                            <div class="option"><input type="radio" name="m3" value="2" id="m3c"><label for="m3c">Катя</label></div>
-                            <div class="option"><input type="radio" name="m3" value="3" id="m3d"><label for="m3d">Кукшина</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="1">
-                        <p>4. Кто называет себя учеником Базарова?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m4" value="0" id="m4a"><label for="m4a">Аркадий</label></div>
-                            <div class="option"><input type="radio" name="m4" value="1" id="m4b"><label for="m4b">Ситников</label></div>
-                            <div class="option"><input type="radio" name="m4" value="2" id="m4c"><label for="m4c">Кукшина</label></div>
-                            <div class="option"><input type="radio" name="m4" value="3" id="m4d"><label for="m4d">Павел Петрович</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="3">
-                        <p>5. Кто такая Анна Сергеевна Одинцова?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m5" value="0" id="m5a"><label for="m5a">Мать Аркадия</label></div>
-                            <div class="option"><input type="radio" name="m5" value="1" id="m5b"><label for="m5b">Сестра Базарова</label></div>
-                            <div class="option"><input type="radio" name="m5" value="2" id="m5c"><label for="m5c">Племянница Кирсановых</label></div>
-                            <div class="option"><input type="radio" name="m5" value="3" id="m5d"><label for="m5d">Богатая вдова, с которой познакомился Базаров</label></div>
-                        </div>
-                    </div>
-                    <div class="question" data-correct="0">
-                        <p>6. Кто из героев говорит: «Природа не храм, а мастерская, и человек в ней работник»?</p>
-                        <div class="options">
-                            <div class="option"><input type="radio" name="m6" value="0" id="m6a"><label for="m6a">Базаров</label></div>
-                            <div class="option"><input type="radio" name="m6" value="1" id="m6b"><label for="m6b">Аркадий</label></div>
-                            <div class="option"><input type="radio" name="m6" value="2" id="m6c"><label for="m6c">Павел Петрович</label></div>
-                            <div class="option"><input type="radio" name="m6" value="3" id="m6d"><label for="m6d">Николай Петрович</label></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="timer-wrap" id="timerWrap">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" class="timer-bg"/>
+                    <circle cx="50" cy="50" r="42" class="timer-fg" id="timerCircle"/>
+                </svg>
+                <div class="timer-text" id="timerText">10</div>
             </div>
         </div>
 
-        <!-- Кнопка общего завершения -->
-        <div style="text-align:center; margin-top: 30px;">
-            <button id="btnFinish" class="btn-final" onclick="finishTest()">🏁 Завершить тест и получить оценку</button>
+        <div class="question-card" id="questionCard">
+            <div class="block-label" id="blockLabel">Выбор ответа</div>
+            <p class="q-text" id="questionText">Загрузка вопроса...</p>
+            <div class="options" id="optionsContainer"></div>
         </div>
-
-        <!-- Итоговый блок -->
-        <div id="finalResult" class="final-card" style="display:none;"></div>
     </div>
+
+    <!-- ЭКРАН 3: Итог -->
+    <div id="finalScreen" class="screen" style="display:none;"></div>
 
     <footer>Интерактивная проверка ДЗ · «Отцы и дети» · 2025</footer>
 </div>
 
 <script>
     // ============================================================
-    //  КОНСТАНТЫ И ХРАНИЛИЩЕ
+    //  НАСТРОЙКИ
     // ============================================================
-    const STORAGE_KEY = 'otcy_i_deti_test_result_v2';
-    let studentName = '';
+    const TIME_PER_QUESTION = 10;        // секунд на вопрос
+    const ADVANCE_DELAY = 400;           // мс после выбора до перехода
+    const STORAGE_KEY = 'otcy_i_deti_timer_test_v2';
+    const TEACHER_EMAIL = 'lyudmila.soloveva.98@mail.ru'; // ← ваша почта
+    const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/' + TEACHER_EMAIL;
 
     // ============================================================
-    //  ПРИ ЗАГРУЗКЕ: проверяем, не проходил ли студент уже тест
+    //  ВОПРОСЫ (20 штук)
+    // ============================================================
+    const questions = [
+        // -------- Блок 1: Выбор ответа (8) --------
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Кто приезжает вместе с Аркадием Кирсановым в Марьино?',
+            options: [
+                { value: 'a', label: 'Павел Петрович', letter: 'A' },
+                { value: 'b', label: 'Евгений Базаров', letter: 'B' },
+                { value: 'c', label: 'Николай Петрович', letter: 'C' },
+                { value: 'd', label: 'Ситников', letter: 'D' }
+            ],
+            correct: 'b'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Как называется имение Кирсановых?',
+            options: [
+                { value: 'a', label: 'Никольское', letter: 'A' },
+                { value: 'b', label: 'Базаровка', letter: 'B' },
+                { value: 'c', label: 'Марьино', letter: 'C' },
+                { value: 'd', label: 'Одинцово', letter: 'D' }
+            ],
+            correct: 'c'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Кто из героев является главным «нигилистом»?',
+            options: [
+                { value: 'a', label: 'Евгений Базаров', letter: 'A' },
+                { value: 'b', label: 'Аркадий Кирсанов', letter: 'B' },
+                { value: 'c', label: 'Павел Петрович', letter: 'C' },
+                { value: 'd', label: 'Николай Петрович', letter: 'D' }
+            ],
+            correct: 'a'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Что произошло на дуэли Базарова и Павла Петровича?',
+            options: [
+                { value: 'a', label: 'Базаров убит', letter: 'A' },
+                { value: 'b', label: 'Павел Петрович убит', letter: 'B' },
+                { value: 'c', label: 'Оба невредимы', letter: 'C' },
+                { value: 'd', label: 'Павел Петрович ранен в ногу', letter: 'D' }
+            ],
+            correct: 'd'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Кто такая Фенечка?',
+            options: [
+                { value: 'a', label: 'Дочь Одинцовой', letter: 'A' },
+                { value: 'b', label: 'Возлюбленная Николая Петровича', letter: 'B' },
+                { value: 'c', label: 'Сестра Базарова', letter: 'C' },
+                { value: 'd', label: 'Горничная Одинцовой', letter: 'D' }
+            ],
+            correct: 'b'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Куда Базаров уезжает из Марьина в середине романа?',
+            options: [
+                { value: 'a', label: 'К своим родителям', letter: 'A' },
+                { value: 'b', label: 'В Петербург', letter: 'B' },
+                { value: 'c', label: 'За границу', letter: 'C' },
+                { value: 'd', label: 'В Никольское к Одинцовой', letter: 'D' }
+            ],
+            correct: 'a'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'Кто из героев умирает от тифа в конце романа?',
+            options: [
+                { value: 'a', label: 'Николай Петрович', letter: 'A' },
+                { value: 'b', label: 'Павел Петрович', letter: 'B' },
+                { value: 'c', label: 'Евгений Базаров', letter: 'C' },
+                { value: 'd', label: 'Аркадий', letter: 'D' }
+            ],
+            correct: 'c'
+        },
+        {
+            block: 'Выбор ответа', type: 'radio',
+            text: 'На ком женится Аркадий в финале?',
+            options: [
+                { value: 'a', label: 'На Анне Одинцовой', letter: 'A' },
+                { value: 'b', label: 'На Кате', letter: 'B' },
+                { value: 'c', label: 'На Фенечке', letter: 'C' },
+                { value: 'd', label: 'На Кукшиной', letter: 'D' }
+            ],
+            correct: 'b'
+        },
+
+        // -------- Блок 2: Верно/Неверно (6) --------
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'Базаров влюбился в Анну Сергеевну Одинцову.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'true'
+        },
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'Аркадий остался нигилистом до конца романа.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'false'
+        },
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'У Базарова и Павла Петровича была дуэль.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'true'
+        },
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'Базаров был дворянином по происхождению.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'false'
+        },
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'Родители Базарова очень любили своего сына.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'true'
+        },
+        {
+            block: 'Верно / Неверно', type: 'tf',
+            text: 'Одинцова ответила взаимностью на признание Базарова.',
+            options: [
+                { value: 'true', label: 'Верно', letter: '✓' },
+                { value: 'false', label: 'Неверно', letter: '✗' }
+            ],
+            correct: 'false'
+        },
+
+        // -------- Блок 3: Угадай героя (6) --------
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: '«Высокий, худой, с длинными волосами, в балахоне с кистями» — это...',
+            options: [
+                { value: '0', label: 'Павел Петрович', letter: 'A' },
+                { value: '1', label: 'Евгений Базаров', letter: 'B' },
+                { value: '2', label: 'Аркадий', letter: 'C' },
+                { value: '3', label: 'Николай Петрович', letter: 'D' }
+            ],
+            correct: '1'
+        },
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: 'Кто из братьев Кирсановых служил в гвардии и был аристократом?',
+            options: [
+                { value: '0', label: 'Николай Петрович', letter: 'A' },
+                { value: '1', label: 'Аркадий', letter: 'B' },
+                { value: '2', label: 'Павел Петрович', letter: 'C' },
+                { value: '3', label: 'Базаров', letter: 'D' }
+            ],
+            correct: '2'
+        },
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: '«Умная, красивая вдова», в которую влюбился Базаров — это...',
+            options: [
+                { value: '0', label: 'Анна Одинцова', letter: 'A' },
+                { value: '1', label: 'Фенечка', letter: 'B' },
+                { value: '2', label: 'Катя', letter: 'C' },
+                { value: '3', label: 'Кукшина', letter: 'D' }
+            ],
+            correct: '0'
+        },
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: 'Кто называет себя учеником Базарова?',
+            options: [
+                { value: '0', label: 'Аркадий', letter: 'A' },
+                { value: '1', label: 'Ситников', letter: 'B' },
+                { value: '2', label: 'Кукшина', letter: 'C' },
+                { value: '3', label: 'Павел Петрович', letter: 'D' }
+            ],
+            correct: '1'
+        },
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: 'Кто такая Анна Сергеевна Одинцова?',
+            options: [
+                { value: '0', label: 'Мать Аркадия', letter: 'A' },
+                { value: '1', label: 'Сестра Базарова', letter: 'B' },
+                { value: '2', label: 'Племянница Кирсановых', letter: 'C' },
+                { value: '3', label: 'Богатая вдова, с которой познакомился Базаров', letter: 'D' }
+            ],
+            correct: '3'
+        },
+        {
+            block: 'Угадай героя', type: 'radio',
+            text: 'Кто из героев говорит: «Природа не храм, а мастерская, и человек в ней работник»?',
+            options: [
+                { value: '0', label: 'Базаров', letter: 'A' },
+                { value: '1', label: 'Аркадий', letter: 'B' },
+                { value: '2', label: 'Павел Петрович', letter: 'C' },
+                { value: '3', label: 'Николай Петрович', letter: 'D' }
+            ],
+            correct: '0'
+        }
+    ];
+
+    // ============================================================
+    //  СОСТОЯНИЕ
+    // ============================================================
+    let studentName = '';
+    let currentIndex = 0;
+    let answers = [];
+    let rafId = null;
+    let timerStart = 0;
+    let locked = false;
+
+    const CIRCUMFERENCE = 2 * Math.PI * 42;
+
+    // ============================================================
+    //  ПРИ ЗАГРУЗКЕ
     // ============================================================
     window.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('qTotal').textContent = questions.length;
+
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
             const data = JSON.parse(saved);
@@ -530,16 +726,15 @@
     });
 
     // ============================================================
-    //  СТАРТ ТЕСТА: проверка имени
+    //  СТАРТ
     // ============================================================
     function startTest() {
         const input = document.getElementById('studentName');
         const value = input.value.trim();
 
-        // Проверяем, что введены минимум имя и фамилия
         if (value.length < 3 || !value.includes(' ')) {
             input.classList.add('error');
-            input.placeholder = 'Введите минимум имя и фамилию через пробел';
+            input.placeholder = 'Введите имя и фамилию через пробел';
             input.value = '';
             setTimeout(() => {
                 input.placeholder = 'Например: Иванов Иван';
@@ -548,130 +743,147 @@
             return;
         }
 
-        // Сохраняем имя в глобальную переменную
         studentName = value;
+        currentIndex = 0;
+        answers = [];
 
-        // Скрываем стартовый экран, показываем тест
         document.getElementById('startScreen').style.display = 'none';
-        document.getElementById('testContent').style.display = 'block';
+        document.getElementById('quizScreen').style.display = 'block';
 
-        // Прокручиваем наверх
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        renderQuestion();
     }
 
-    // Разрешаем нажать Enter в поле имени
     document.getElementById('studentName').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') startTest();
     });
 
     // ============================================================
-    //  ЕСЛИ СТУДЕНТ УЖЕ ПРОХОДИЛ — показываем предупреждение
+    //  ОТОБРАЖЕНИЕ ВОПРОСА
     // ============================================================
-    function showRetakeWarning(data) {
-        document.getElementById('startScreen').style.display = 'none';
-        document.getElementById('testContent').style.display = 'block';
-        document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
-        document.querySelector('div[style*="text-align:center"]').style.display = 'none';
+    function renderQuestion() {
+        if (currentIndex >= questions.length) {
+            finishTest();
+            return;
+        }
 
-        const finalDiv = document.getElementById('finalResult');
-        finalDiv.style.display = 'block';
-        finalDiv.setAttribute('data-watermark', (data.name || 'СТУДЕНТ').toUpperCase());
-        finalDiv.innerHTML = `
-            <div class="final-student">${escapeHtml(data.name || 'Без имени')}</div>
-            <div class="final-label">Результат уже сохранён</div>
-            <h2>⚠️ Тест уже пройден</h2>
-            <div class="final-score">${data.correct} / ${data.total}</div>
-            <p style="font-size:1.1rem; color:#6b4f3a;">правильных ответов (${Math.round(data.correct/data.total*100)}%)</p>
-            <div class="final-mark ${markClass(data.mark)}">Оценка: ${data.mark}</div>
-            <div class="final-meta">
-                <p>🗓 <strong>Дата прохождения:</strong> ${data.date}</p>
-                <p>🔑 <strong>Код подтверждения:</strong> <span class="code-badge">${data.code}</span></p>
-                <p style="margin-top:8px; font-size:0.85rem; color:#8f7a66;">Повторное прохождение заблокировано.</p>
-            </div>
-        `;
+        const q = questions[currentIndex];
+
+        document.getElementById('qNum').textContent = currentIndex + 1;
+        document.getElementById('blockLabel').textContent = q.block;
+        document.getElementById('questionText').textContent = q.text;
+        document.getElementById('progressFill').style.width =
+            (currentIndex / questions.length * 100) + '%';
+
+        const optionsEl = document.getElementById('optionsContainer');
+        optionsEl.innerHTML = '';
+
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'option';
+            btn.innerHTML = `<span class="letter">${opt.letter}</span><span>${opt.label}</span>`;
+            btn.addEventListener('click', () => selectAnswer(opt.value, btn));
+            optionsEl.appendChild(btn);
+        });
+
+        const card = document.getElementById('questionCard');
+        card.classList.remove('animate');
+        void card.offsetWidth;
+        card.classList.add('animate');
+
+        locked = false;
+        startTimer();
     }
 
     // ============================================================
-    //  ВЫБОР "ВЕРНО / НЕВЕРНО"
+    //  ТАЙМЕР
     // ============================================================
-    function selectTF(element, value) {
-        const parentQuestion = element.closest('.question');
-        const buttons = parentQuestion.querySelectorAll('.tf-btn');
-        buttons.forEach(btn => btn.classList.remove('selected-true', 'selected-false'));
-        if (value === 'true') {
-            element.classList.add('selected-true');
-            parentQuestion.dataset.selected = 'true';
+    function startTimer() {
+        cancelAnimationFrame(rafId);
+        timerStart = performance.now();
+        tickTimer();
+    }
+
+    function tickTimer() {
+        const elapsed = (performance.now() - timerStart) / 1000;
+        const remaining = Math.max(0, TIME_PER_QUESTION - elapsed);
+
+        updateTimerUI(remaining);
+
+        if (remaining <= 0) {
+            handleTimeout();
+            return;
+        }
+        rafId = requestAnimationFrame(tickTimer);
+    }
+
+    function updateTimerUI(remaining) {
+        const fraction = remaining / TIME_PER_QUESTION;
+        const offset = CIRCUMFERENCE * (1 - fraction);
+
+        const circle = document.getElementById('timerCircle');
+        circle.style.strokeDashoffset = offset;
+
+        const text = document.getElementById('timerText');
+        text.textContent = Math.ceil(remaining);
+
+        let color = '#4caf50';
+        if (remaining <= 3) color = '#f44336';
+        else if (remaining <= 6) color = '#ff9800';
+
+        circle.style.stroke = color;
+        text.style.color = remaining <= 3 ? '#f44336' : '#3e2e1f';
+    }
+
+    // ============================================================
+    //  ВЫБОР ОТВЕТА
+    // ============================================================
+    function selectAnswer(value, btnEl) {
+        if (locked) return;
+        locked = true;
+        cancelAnimationFrame(rafId);
+
+        document.querySelectorAll('#optionsContainer .option').forEach(o => o.classList.remove('selected'));
+        btnEl.classList.add('selected');
+
+        answers[currentIndex] = value;
+
+        setTimeout(() => {
+            nextQuestion();
+        }, ADVANCE_DELAY);
+    }
+
+    // ============================================================
+    //  ВРЕМЯ ВЫШЛО
+    // ============================================================
+    function handleTimeout() {
+        if (locked) return;
+        locked = true;
+
+        answers[currentIndex] = null;
+
+        document.getElementById('timerWrap').classList.add('timeout');
+
+        setTimeout(() => {
+            document.getElementById('timerWrap').classList.remove('timeout');
+            nextQuestion();
+        }, ADVANCE_DELAY);
+    }
+
+    // ============================================================
+    //  ПЕРЕХОД К СЛЕДУЮЩЕМУ
+    // ============================================================
+    function nextQuestion() {
+        currentIndex++;
+        if (currentIndex >= questions.length) {
+            finishTest();
         } else {
-            element.classList.add('selected-false');
-            parentQuestion.dataset.selected = 'false';
+            renderQuestion();
         }
     }
 
     // ============================================================
-    //  ПОДСЧЁТ РЕЗУЛЬТАТОВ
-    // ============================================================
-    function countResults() {
-        let correct = 0;
-        let total = 0;
-        let details = [];
-
-        document.querySelectorAll('#quiz1 .question').forEach((q, idx) => {
-            total++;
-            const correctVal = q.dataset.correct;
-            const selected = q.querySelector('input[type="radio"]:checked');
-            const qText = q.querySelector('p').innerText;
-            let isCorrect = false;
-            let correctLabel = '';
-            const correctInput = q.querySelector(`input[value="${correctVal}"]`);
-            if (correctInput) {
-                const label = correctInput.nextElementSibling;
-                correctLabel = label ? label.innerText : correctVal;
-            }
-            if (selected && selected.value === correctVal) {
-                correct++;
-                isCorrect = true;
-            }
-            details.push({ block: 'Тест', num: idx + 1, text: qText, isCorrect, correctLabel });
-        });
-
-        document.querySelectorAll('#tfBlock .question').forEach((q, idx) => {
-            total++;
-            const correctVal = q.dataset.correct;
-            const selected = q.dataset.selected;
-            const qText = q.querySelector('p').innerText;
-            let isCorrect = false;
-            const correctLabel = correctVal === 'true' ? 'Верно' : 'Неверно';
-            if (selected === correctVal) {
-                correct++;
-                isCorrect = true;
-            }
-            details.push({ block: 'Верно/Неверно', num: idx + 1, text: qText, isCorrect, correctLabel });
-        });
-
-        document.querySelectorAll('#matchBlock .question').forEach((q, idx) => {
-            total++;
-            const correctVal = q.dataset.correct;
-            const selected = q.querySelector('input[type="radio"]:checked');
-            const qText = q.querySelector('p').innerText;
-            let isCorrect = false;
-            let correctLabel = '';
-            const correctInput = q.querySelector(`input[value="${correctVal}"]`);
-            if (correctInput) {
-                const label = correctInput.nextElementSibling;
-                correctLabel = label ? label.innerText : correctVal;
-            }
-            if (selected && selected.value === correctVal) {
-                correct++;
-                isCorrect = true;
-            }
-            details.push({ block: 'Герои', num: idx + 1, text: qText, isCorrect, correctLabel });
-        });
-
-        return { correct, total, details };
-    }
-
-    // ============================================================
-    //  ОЦЕНКА ПО 5-БАЛЛЬНОЙ ШКАЛЕ
+    //  ОЦЕНКА
     // ============================================================
     function calculateMark(correct, total) {
         const percent = (correct / total) * 100;
@@ -681,13 +893,8 @@
         return { mark: '2', label: 'неудовлетворительно', cls: 'mark-2' };
     }
 
-    function markClass(mark) {
-        return 'mark-' + mark;
-    }
-
     // ============================================================
-    //  ГЕНЕРАЦИЯ КОДА ПОДТВЕРЖДЕНИЯ
-    //  Зависит от имени и даты — чужой код не подойдёт
+    //  КОД ПОДТВЕРЖДЕНИЯ
     // ============================================================
     function makeCode(name, dateStr) {
         const str = name.toLowerCase().trim() + '|' + dateStr;
@@ -697,14 +904,10 @@
             hash |= 0;
         }
         const abs = Math.abs(hash).toString(36).toUpperCase();
-        // Делаем код вида: 2 буквы + 4 цифры
         const base = abs.padStart(6, 'X').slice(0, 6);
         return 'КД-' + base;
     }
 
-    // ============================================================
-    //  ЗАЩИТА ОТ XSS В ИМЕНИ
-    // ============================================================
     function escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
@@ -712,28 +915,66 @@
     }
 
     // ============================================================
-    //  ЗАВЕРШЕНИЕ ТЕСТА
+    //  ОТПРАВКА НА ПОЧТУ ЧЕРЕЗ FORMSUBMIT (AJAX)
+    // ============================================================
+    function sendResultToEmail(payload) {
+        return fetch(FORMSUBMIT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                _subject: '📊 Тест «Отцы и дети» — ' + payload.name,
+                _template: 'table',
+                _captcha: 'false',
+                '👤 Студент': payload.name,
+                '✅ Правильных ответов': payload.correct + ' из ' + payload.total,
+                '📈 Процент': payload.percent + '%',
+                '🏆 Оценка': payload.mark + ' (' + payload.label + ')',
+                '🔑 Код подтверждения': payload.code,
+                '🗓 Дата и время': payload.date,
+                '📋 Разбор ошибок': payload.errorsText
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+        });
+    }
+
+    // ============================================================
+    //  ФИНАЛ
     // ============================================================
     function finishTest() {
-        // Проверяем, что имя введено (на всякий случай)
-        if (!studentName) {
-            alert('Пожалуйста, перезагрузите страницу и введите имя.');
-            return;
-        }
+        cancelAnimationFrame(rafId);
 
-        const { correct, total, details } = countResults();
+        document.getElementById('quizScreen').style.display = 'none';
 
-        const answered =
-            document.querySelectorAll('#quiz1 input[type="radio"]:checked').length +
-            document.querySelectorAll('#tfBlock .question[data-selected]').length +
-            document.querySelectorAll('#matchBlock input[type="radio"]:checked').length;
+        let correct = 0;
+        const details = [];
 
-        if (answered < total) {
-            if (!confirm(`Вы ответили на ${answered} из ${total} вопросов. Пропущенные будут засчитаны как неверные. Завершить тест?`)) {
-                return;
-            }
-        }
+        questions.forEach((q, i) => {
+            const ans = answers[i];
+            const isCorrect = ans === q.correct;
+            if (isCorrect) correct++;
 
+            const correctOpt = q.options.find(o => o.value === q.correct);
+            const userOpt = q.options.find(o => o.value === ans);
+
+            details.push({
+                num: i + 1,
+                block: q.block,
+                text: q.text,
+                isCorrect,
+                correctLabel: correctOpt ? correctOpt.label : q.correct,
+                userLabel: userOpt ? userOpt.label : (ans === null ? '— (время вышло)' : '—'),
+                timeout: ans === null
+            });
+        });
+
+        const total = questions.length;
+        const percent = Math.round(correct / total * 100);
         const { mark, label, cls } = calculateMark(correct, total);
 
         const now = new Date();
@@ -745,51 +986,109 @@
 
         const errors = details.filter(d => !d.isCorrect);
         let errorsHtml = '';
+        let errorsText = '';
+
         if (errors.length === 0) {
-            errorsHtml = '<p style="color:#155724; font-weight:600;">🎉 Ошибок нет! Отличная работа.</p>';
+            errorsHtml = '<p style="color:#155724; font-weight:700; text-align:center;">🎉 Ошибок нет! Отличная работа.</p>';
+            errorsText = 'Ошибок нет.';
         } else {
-            errorsHtml = '<p style="font-weight:700; margin-bottom:10px;">Разбор ошибок:</p>';
+            errorsHtml = `<p style="font-weight:700; margin-bottom:10px;">Разбор ошибок (${errors.length}):</p>`;
+            errorsText = errors.map(e =>
+                `№${e.num} (${e.block}): ваш ответ — ${e.userLabel}; правильно — ${e.correctLabel}`
+            ).join('\n');
+
             errors.forEach(e => {
-                errorsHtml += `<p>❌ <em>${e.block}, вопрос ${e.num}:</em> ${e.text}<br>
-                    <span style="color:#9b2c2c;">Ваш ответ неверный. Правильно: <strong>${e.correctLabel}</strong></span></p>`;
+                errorsHtml += `
+                    <div class="err-item">
+                        <strong>Вопрос ${e.num} (${e.block}):</strong> ${escapeHtml(e.text)}<br>
+                        Ваш ответ: <em>${escapeHtml(e.userLabel)}</em><br>
+                        Правильно: <strong>${escapeHtml(e.correctLabel)}</strong>
+                    </div>`;
             });
         }
 
-        const finalDiv = document.getElementById('finalResult');
-        finalDiv.style.display = 'block';
-        finalDiv.setAttribute('data-watermark', studentName.toUpperCase());
-        finalDiv.innerHTML = `
-            <div class="final-student">${escapeHtml(studentName)}</div>
-            <div class="final-label">Результат теста</div>
-            <h2>📊 Итоговая оценка</h2>
-            <div class="final-score">${correct} / ${total}</div>
-            <p style="font-size:1.1rem; color:#6b4f3a;">правильных ответов (${Math.round(correct/total*100)}%)</p>
-            <div class="final-mark ${cls}">Оценка: ${mark} (${label})</div>
-            <div class="final-details">
-                ${errorsHtml}
-            </div>
-            <div class="final-meta">
-                <p>👤 <strong>Студент:</strong> ${escapeHtml(studentName)}</p>
-                <p>🗓 <strong>Дата прохождения:</strong> ${dateStr}</p>
-                <p>🔑 <strong>Код подтверждения:</strong> <span class="code-badge">${code}</span></p>
-                <p style="margin-top:8px; font-size:0.85rem; color:#8f7a66;">
-                    Сообщите этот код преподавателю вместе со скриншотом.
-                    Повторное прохождение заблокировано.
-                </p>
+        const finalScreen = document.getElementById('finalScreen');
+        finalScreen.style.display = 'block';
+        finalScreen.innerHTML = `
+            <div class="final-card" data-watermark="${escapeHtml(studentName.toUpperCase())}">
+                <div class="final-student">${escapeHtml(studentName)}</div>
+                <div class="final-label">Результат теста</div>
+                <h2>📊 Итоговая оценка</h2>
+                <div class="final-score">${correct} / ${total}</div>
+                <p style="font-size:1.05rem; color:#6b4f3a;">правильных ответов (${percent}%)</p>
+                <div class="final-mark ${cls}">Оценка: ${mark} (${label})</div>
+                <div id="sendStatus" class="send-status send-pending">📧 Отправляем результат преподавателю...</div>
+                <div class="final-details">${errorsHtml}</div>
+                <div class="final-meta">
+                    <p>👤 <strong>Студент:</strong> ${escapeHtml(studentName)}</p>
+                    <p>🗓 <strong>Дата прохождения:</strong> ${dateStr}</p>
+                    <p>🔑 <strong>Код подтверждения:</strong> <span class="code-badge">${code}</span></p>
+                    <p style="margin-top:8px; font-size:0.85rem; color:#8f7a66;">
+                        Код можно назвать преподавателю — по нему легко проверить, что это ваш результат.
+                    </p>
+                </div>
             </div>
         `;
 
-        document.getElementById('btnFinish').disabled = true;
-        document.getElementById('btnFinish').innerText = '✔ Тест завершён';
-
-        // Сохраняем результат вместе с именем и кодом
+        // Сохраняем локально (защита от повторного прохождения)
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             name: studentName,
             correct, total, mark,
             code, date: dateStr
         }));
 
-        finalDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Отправляем на почту
+        sendResultToEmail({
+            name: studentName,
+            correct, total, percent,
+            mark, label,
+            code, date: dateStr,
+            errorsText
+        }).then(() => {
+            const el = document.getElementById('sendStatus');
+            if (el) {
+                el.className = 'send-status send-ok';
+                el.innerHTML = '✅ Результат отправлен преподавателю на почту';
+            }
+        }).catch(err => {
+            console.error('Ошибка отправки:', err);
+            const el = document.getElementById('sendStatus');
+            if (el) {
+                el.className = 'send-status send-fail';
+                el.innerHTML = '⚠️ Не удалось отправить автоматически. Покажите этот экран преподавателю или сделайте скриншот.';
+            }
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================================
+    //  ЕСЛИ СТУДЕНТ УЖЕ ПРОХОДИЛ
+    // ============================================================
+    function showRetakeWarning(data) {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('quizScreen').style.display = 'none';
+
+        const finalScreen = document.getElementById('finalScreen');
+        finalScreen.style.display = 'block';
+        finalScreen.innerHTML = `
+            <div class="final-card" data-watermark="${escapeHtml((data.name || 'СТУДЕНТ').toUpperCase())}">
+                <div class="final-student">${escapeHtml(data.name || 'Без имени')}</div>
+                <div class="final-label">Результат уже сохранён</div>
+                <h2>⚠️ Тест уже пройден</h2>
+                <div class="final-score">${data.correct} / ${data.total}</div>
+                <p style="font-size:1.05rem; color:#6b4f3a;">правильных ответов (${Math.round(data.correct/data.total*100)}%)</p>
+                <div class="final-mark mark-${data.mark}">Оценка: ${data.mark}</div>
+                <div class="final-meta" style="text-align:left;">
+                    <p>👤 <strong>Студент:</strong> ${escapeHtml(data.name || 'Без имени')}</p>
+                    <p>🗓 <strong>Дата прохождения:</strong> ${data.date}</p>
+                    <p>🔑 <strong>Код подтверждения:</strong> <span class="code-badge">${data.code}</span></p>
+                    <p style="margin-top:8px; font-size:0.85rem; color:#8f7a66;">
+                        Повторное прохождение заблокировано.
+                    </p>
+                </div>
+            </div>
+        `;
     }
 </script>
 </body>
